@@ -1,5 +1,12 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser'
+import cloudinary from 'cloudinary'
+import { errorMiddleware } from './middleware/error-handler.js'
+
+
+//Routes Import
+import authRoutes from './routes/auth.routes.js'
 
 
 dotenv.config()
@@ -12,10 +19,24 @@ const app = express()
 
 //Making read the json object
 app.use(express.json())
+app.use(cookieParser())
 
 app.get("/",(req,res)=>{
     res.send("Hello Guys ! Welcome to Coderush")
 })
+
+//Cloudinary setup
+cloudinary.v2.config({
+    cloud_name:process.env.CLOUNDINARY_CLOUDNAME,
+    api_key:process.env.CLOUNDINARY_API_KEY,
+    api_secret:process.env.CLOUNDINARY_API_SECRET
+})
+
+
+//Auth Routes
+app.use("/api/v1/auth", authRoutes)
+
+app.use(errorMiddleware)
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server is running on port ${process.env.PORT}`)
@@ -35,6 +56,6 @@ app.listen(process.env.PORT,()=>{
  * 7. npx prisma generate - we will get the ./src/generayed/prisma files
  * 8. Now in libs, make db file and "import {PrismaClient} from "../generated/prisma/index.js""
  * 9. All the confgs made in db
- * 10. npx prisma midrate dev 
+ * 10. npx prisma migrate dev 
  * 11. npx prisma db push
  */
