@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import { db } from '../libs/db.js'
 import ApiErrors from '../utils/api-error.js'
 
-
+//Check if user is Authenticated
 const isAuthenticated=async(req,res,next)=>{
     const {token}=req.cookies
 
