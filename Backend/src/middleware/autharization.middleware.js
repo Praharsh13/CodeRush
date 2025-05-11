@@ -1,5 +1,5 @@
 import { db } from "../libs/db";
-import ApiErrors from "../utils/api-error";
+import ApiErrors from "../utils/api-error.js";
 
 
 
@@ -22,3 +22,5 @@ const isAdmin=async(req,res,next)=>{
     next()
 
 }
+
+export default isAdmin
