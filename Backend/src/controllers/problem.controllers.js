@@ -126,12 +126,168 @@ const getAllProblems= asyncHandler(async (req,res,next)=>{
     )
 })
 
+/**
+ * @desc Get a problem based on the id
+ * @params - String - Id of the problem
+ * @route GET
+ * @Access Public
+ */
+const getProblemById=asyncHandler(async(req,res,next)=>{
+
+    const {id} = req.params
+
+    const problem =await db.problem.findUnique({
+        where:{
+            id
+        }
+    })
+
+    if(!problem){
+        throw new ApiErrors(404, "Problem not found!")
+    }
+
+    res.status(200).json(new ApiResponse(200, "Problem is found", problem))
+
+})
+
+/**
+ * @desc Update the given problem
+ * @params - String - Id of the problem
+ * @body - all problem body
+ * @route PUT
+ * @access Public
+ */
+
+const updateProblem= asyncHandler(async(req,res,next)=>{
+    const {
+        title,
+        description,
+        difficulty,
+        tags,
+        example,
+        constraints,
+        testcases,
+        codeSnippets,
+        referenceSolution,
+        hints,
+        editorial
+    } = req.body
+
+    const {id}=req.params 
+    const user=req.user
+    if(!user || !user.role=='ADMIN'){
+        throw new ApiErrors(404,"User not found")
+    }
+
+    const problem= await db.problem.findUnique({
+        where:{
+            id
+        }
+    })
+    console.log("user id is", user.id)
+    console.log("problem id ", problem.userId)
+
+    if(user.id!==problem.userId){
+        throw new ApiErrors(401,"Not authorized to change")
+    }
+
+    
+
+    for(const [language,solutionCode] of Object.entries(referenceSolution)){
+        const languageId=getJudge0LanguageId(language)
+
+        if(!languageId){
+            throw new ApiErrors(404,`Language ${language} is not supported`)
+        }
+
+        const submission=testcases.map(({input,output})=>({
+            source_code:solutionCode,
+            language_id:languageId,
+            stdin:input,
+            expected_output:output
+        }))
+
+        const submissionResults=await submitBatch(submission)
+
+        const tokens = submissionResults.map((res)=>res.token)
+
+        const results = await pollBatchResults(tokens)
+
+        for(let i=0;i<results.length;i++){
+            const result=results[i]
+
+            console.log("Results----", result)
+
+            if(result.status.id!==3){
+                throw new ApiErrors(400, `Testcase ${i+1} failed for language ${language}`)
+            }
+        }
+
+        
+    }
+
+    const updatedProblem=await db.problem.update({
+        where :{
+            id
+        },
+        data: {
+
+            title,
+            description,
+            difficulty,
+            tags,
+            example,
+            constraints,
+            hints,
+            editorial,
+            testcases,
+            codeSnippets,
+            referenceSolution,
+            userId:req.user.id
+
+        }
+    })
+
+    res.status(201).json(new ApiResponse(201,"Problem Updated succesfully",updatedProblem))
+})
+
+/**
+ * @desc Delete specific problem
+ * @params - string - id of the problem
+ * @route - Delete
+ * @access - Private - Only Admin
+ */
+const deleteProblem= asyncHandler(async(req,res,next)=>{
+    const {id}= req.params
+
+    const user=req.user
+
+    if(!user || !user.role=='ADMIN'){
+        throw new ApiErrors(403, "Not authorized")
+    }
+
+    const problem=await db.problem.findUnique({
+        where:{id}
+    })
+
+    if(!problem){
+        throw new ApiErrors(404,"Problem not found")
+    }
+
+    const deleteProblem=await db.problem.delete({
+        where:{id}
+    })
+
+    res.status(201).json(new ApiResponse(201,"Problem deleted successfully",deleteProblem))
+})
 
 
 
 
-
-
-
-
-export {createProblem,getAllProblems}
+export { 
+    createProblem,
+    getAllProblems,
+    getProblemById,
+    updateProblem,
+    deleteProblem
+}
