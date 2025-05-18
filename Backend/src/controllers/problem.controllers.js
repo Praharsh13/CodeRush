@@ -28,8 +28,11 @@ const createProblem=asyncHandler(async(req,res,next)=>{
         referenceSolution
     } = req.body
 
+    console.log(req.body)
+
     // 2. Check if user role is Admin
     const user= req.user
+    console.log(user)
 
     if(!user || user.role !=="ADMIN"){
         throw new ApiErrors(403, "Access Denied")
@@ -46,7 +49,10 @@ const createProblem=asyncHandler(async(req,res,next)=>{
             throw new ApiErrors(400, `Language ${language} is not supported`)
         }
 
-        // 4. For each language solution , we also need to add test cases and create a code submission 
+
+        
+
+        // 4. For each solution , we also need to add test cases and create a code submission 
         const submissions= testcases.map(({input, output})=>({
             source_code:solutionCode,
             language_id:languageId,
@@ -54,15 +60,20 @@ const createProblem=asyncHandler(async(req,res,next)=>{
             expected_output:output
         }))
 
+       console.log(submissions)
+
+       // console.log("submission code " ,submissions)
+        
         const submissionResults = await submitBatch(submissions)
+       
 
         const tokens= submissionResults.map((res)=>res.token)
-
+        console.log(  "data is", tokens) 
         const results=await pollBatchResults(tokens)
 
         for(let i=0;i<results.length;i++){
             const result=results[i]
-            console.log("Result-------",result)
+           console.log("Result-------",result)
         
 
         if(result.status.id !==3){
@@ -100,6 +111,20 @@ const createProblem=asyncHandler(async(req,res,next)=>{
 
 })
 
+/**
+ * @desc Get all the problems
+ * @Route GET
+ * @access Public
+ */
+const getAllProblems= asyncHandler(async (req,res,next)=>{
+    const problems= await db.problem.findMany()
+    if(!problems){
+        throw new ApiErrors(404,"No Problems Found")
+    }
+
+    res.status(200).json(new ApiResponse(200, "All problems", problems)
+    )
+})
 
 
 
@@ -108,4 +133,5 @@ const createProblem=asyncHandler(async(req,res,next)=>{
 
 
 
-export {createProblem}
+
+export {createProblem,getAllProblems}
