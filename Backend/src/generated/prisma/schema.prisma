@@ -27,6 +27,11 @@ enum Difficulty {
   HARD
 }
 
+enum SubmissionStatus {
+  ACCEPTED
+  REJECTED
+}
+
 model User {
   id                     String   @id @default(uuid())
   username               String?
@@ -42,7 +47,9 @@ model User {
   updatedAt              DateTime @updatedAt
 
   //Creating one-to-many Relationships
-  problems Problem[]
+  problems      Problem[]
+  submission    Submission[]
+  problemSolved ProblemSolved[]
 }
 
 //Creating Problem model
@@ -64,5 +71,63 @@ model Problem {
   updatedAt         DateTime   @updatedAt
 
   //Relationships
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission Submission[]
+  solvedBy   ProblemSolved[]
+}
+
+model Submission {
+  id            String           @id @default(uuid())
+  userId        String
+  problemId     String
+  sourceCode    Json
+  language      String
+  stdin         String?
+  stdout        String?
+  stderr        String?
+  compileOutput String?
+  status        SubmissionStatus
+  memory        String?
+  time          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem   Problem          @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  testCases TestCaseResult[]
+}
+
+model TestCaseResult {
+  id            String  @id @default(uuid())
+  submissionId  String
+  testCase      Int
+  passed        Boolean
+  stdout        String?
+  expected      String
+  stderr        String
+  compileOutput String?
+  status        String
+  memory        String?
+  time          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId]) //create submission id for faster query
+}
+
+model ProblemSolved {
+  id        String   @id @default(uuid())
+  userId    String
+  problemId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, problemId]) // unique user and problem so one user solve one problem
 }
