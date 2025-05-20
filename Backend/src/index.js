@@ -8,7 +8,8 @@ import { errorMiddleware } from './middleware/error-handler.js'
 //Routes Import
 import authRoutes from './routes/auth.routes.js'
 import problemRoutes from './routes/problem.routes.js'
-import { codeExecutionRoutes } from './routes/codeExecution.js'
+import { codeExecutionRoutes } from './routes/executeCode.routes.js'
+import submissionRoute from './routes/submission.route.js'
 
 
 dotenv.config()
@@ -41,6 +42,8 @@ app.use("/api/v1/auth", authRoutes)
 app.use("/app/v1/problem", problemRoutes)
 
 app.use("/app/v1/codeexecution", codeExecutionRoutes)
+
+app.use("/app/v1/usersubmission", submissionRoute)
 
 app.use(errorMiddleware)
 
