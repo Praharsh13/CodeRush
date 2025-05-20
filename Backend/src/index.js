@@ -8,6 +8,7 @@ import { errorMiddleware } from './middleware/error-handler.js'
 //Routes Import
 import authRoutes from './routes/auth.routes.js'
 import problemRoutes from './routes/problem.routes.js'
+import { codeExecutionRoutes } from './routes/codeExecution.js'
 
 
 dotenv.config()
@@ -38,6 +39,8 @@ cloudinary.v2.config({
 app.use("/api/v1/auth", authRoutes)
 
 app.use("/app/v1/problem", problemRoutes)
+
+app.use("/app/v1/codeexecution", codeExecutionRoutes)
 
 app.use(errorMiddleware)
 

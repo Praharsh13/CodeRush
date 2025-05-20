@@ -110,7 +110,7 @@ model TestCaseResult{
   passed Boolean
   stdout String?
   expected String
-  stderr String
+  stderr String?
   compileOutput String?
   status String
   memory String?

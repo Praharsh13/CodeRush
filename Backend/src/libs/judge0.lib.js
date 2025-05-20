@@ -9,6 +9,16 @@ export const getJudge0LanguageId=(language)=>{
     return languageMap[language.toUpperCase()]
 }
 
+export const getLanguageName=(language_id)=>{
+  const languageMap={
+    71:"PYTHON",
+    62:"JAVA",
+    63:"JAVASCRIPT"
+  }
+
+  return languageMap[language_id]
+}
+
 //Making endpoint for Judge0 Submission which create a token
 
 export const submitBatch = async (submissions) => {
@@ -20,7 +30,7 @@ export const submitBatch = async (submissions) => {
         headers: {
           "Content-Type": "application/json",
           Accept:'application/json',
-          Authorization:'Bearer sk_live_l3SH6ydCGlAu7f8uyVOwIS7kmGzw9Fl6'
+          Authorization:`Bearer ${process.env.JUDGE0_SULU_TOKEN}`
         },
       }
     );
@@ -51,7 +61,7 @@ export const pollBatchResults= async(tokens)=>{
         {
           headers:{
             Accept:'application/json',
-            Authorization:'Bearer sk_live_l3SH6ydCGlAu7f8uyVOwIS7kmGzw9Fl6'
+            Authorization:`Bearer ${process.env.JUDGE0_SULU_TOKEN}`
           }
         })
        
