@@ -6,6 +6,7 @@ import {
     deleteProblem, 
     getAllProblems, 
     getProblemById, 
+    getProblemSolvedByUser, 
     updateProblem } 
     from '../controllers/problem.controllers.js'
 
@@ -17,6 +18,7 @@ problemRoutes.route("/get-all-problem").get(isAuthenticated,getAllProblems)
 problemRoutes.route("/get-problem-by-id/:id").get(isAuthenticated,getProblemById)
 problemRoutes.route("/update-problem/:id").put(isAuthenticated,isAdmin,updateProblem)
 problemRoutes.route("/delete-problem/:id").delete(isAuthenticated,isAdmin,deleteProblem)
+problemRoutes.route("/problem-solved-by-user").get(isAuthenticated,getProblemSolvedByUser)
 
 
 

@@ -281,6 +281,34 @@ const deleteProblem= asyncHandler(async(req,res,next)=>{
     res.status(201).json(new ApiResponse(201,"Problem deleted successfully",deleteProblem))
 })
 
+/**
+ * @desc Get all the problems solved by user
+ * @params - user id - from req.user
+ * @access - User only
+ * @route - GET
+ */
+
+const getProblemSolvedByUser= asyncHandler(async(req,res,next)=>{
+    const problemSolvedbyuser= await db.problem.findMany({
+        where:{
+            solvedBy:{
+                some:{
+                    userId:req.user.id
+                }
+            }
+        },
+        include:{
+            solvedBy:{
+                where:{
+                    userId:req.user.id
+                }
+            }
+        }
+    })
+
+    res.status(200).json(new ApiResponse(200,"All problem solved by user", problemSolvedbyuser))
+})
+
 
 
 
@@ -289,5 +317,6 @@ export {
     getAllProblems,
     getProblemById,
     updateProblem,
-    deleteProblem
+    deleteProblem,
+    getProblemSolvedByUser
 }
