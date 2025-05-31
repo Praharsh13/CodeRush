@@ -13,6 +13,7 @@ import {
   import { Link } from 'react-router-dom'
   import {z} from "zod"
   import AuthImagePattern from "../Components/AuthImagePattern"
+import { useAuthStore } from '../store/useAuthStore';
 
   //Creating zod Schema for the verifcation having form validation
 
@@ -29,6 +30,7 @@ import {
 
 const Register = () => {
     const [showPassword, setShowPassword]=useState(false)
+    const {signup,isSigningUp}=useAuthStore()
     const {
         register,
         handleSubmit,
@@ -36,7 +38,14 @@ const Register = () => {
         =useForm({resolver:zodResolver(RegisterSchema)})
 
     const onSubmit= async(data)=>{
-        console.log(data)
+        try{
+            await signup(data)
+            console.log("User register", data)
+
+        }
+        catch(error){
+            console.error("Register failed",error)
+        }
     }    
   return (
     <div className='h-screen grid lg:grid-cols-2'>
@@ -140,7 +149,16 @@ const Register = () => {
         <button
           type="submit"
           className="btn btn-primary w-full"
-        >Submit
+          disabled={isSigningUp}
+        >
+            {isSigningUp ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                "Register"
+              )}
         </button>
       </form>
 
