@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import cloudinary from 'cloudinary'
 import { errorMiddleware } from './middleware/error-handler.js'
+import cors from 'cors'
 
 
 //Routes Import
@@ -19,6 +20,13 @@ dotenv.config()
 
 
 const app = express()
+
+app.use(
+    cors({
+        origin:process.env.CLIENT_URL,
+        credentials:true
+    })
+)
 
 
 //Making read the json object
@@ -38,7 +46,7 @@ cloudinary.v2.config({
 
 
 //Auth Routes
-app.use("/api/v1/auth", authRoutes)
+app.use("/app/v1/auth", authRoutes)
 
 app.use("/app/v1/problem", problemRoutes)
 

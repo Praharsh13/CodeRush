@@ -106,3 +106,45 @@ We use 2 end points of Juge0
 
 1. Create submissions which return tokens 
 2. Get submissions if it is successfull
+
+Input:
+
+{
+  "title" : "Add Two Numbers",
+  "description" : "Given 2 number add them up",
+  "difficulty" : "EASY",
+  "tags" : ["Aritmatic" ,"operators", "number"],
+  "examples" : {
+    "JAVASCRIPT":{
+      "input":"-5 7",
+      "output":"2"
+      "explanation":"Adding -5 and 7 gives you 2"
+
+    }
+  }
+  "constraints" : "-10^9 <= a , b <= 10^9",
+  "testcases": [
+        {
+            "input": "100 200",
+            "output": "300"
+        },
+        {
+            "input": "-500 -600",
+            "output": "-1100"
+        },
+        {
+            "input": "0 0",
+            "output": "0"
+        }
+    ],
+   "codeSnippets": {
+        "JAVASCRIPT": "const fs = require('fs');\n\nfunction addTwoNumbers(a, b) {\n    // Write your code here\n    // Return the sum of a and b\n    return a + b;\n}\n\n// Reading input from stdin (using fs to read all input)\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconst [a, b] = input.split(' ').map(Number);\n\nconsole.log(addTwoNumbers(a, b));",
+        "PYTHON": "def add_two_numbers(a, b):\n    # Write your code here\n    # Return the sum of a and b\n    return a + b\n\nimport sys\ninput_line = sys.stdin.read()\na, b = map(int, input_line.split())\nprint(add_two_numbers(a, b))",
+        "JAVA": "import java.util.Scanner;\n\npublic class Main {\n    public static int addTwoNumbers(int a, int b) {\n        // Write your code here\n        // Return the sum of a and b\n        return a + b;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(addTwoNumbers(a, b));\n    }\n}"
+    },
+    "referenceSolutions": {
+        "JAVASCRIPT": "const fs = require('fs');\n\n// Reading input from stdin (using fs to read all input)\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconst [a, b] = input.split(' ').map(Number);\n\nconsole.log(a + b);",
+        "PYTHON": "import sys\ninput_line = sys.stdin.read()\na, b = map(int, input_line.split())\nprint(a + b)",
+        "JAVA": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(a + b);\n    }\n}"
+    }  
+}
