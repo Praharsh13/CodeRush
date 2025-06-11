@@ -117,7 +117,17 @@ const createProblem=asyncHandler(async(req,res,next)=>{
  * @access Public
  */
 const getAllProblems= asyncHandler(async (req,res,next)=>{
-    const problems= await db.problem.findMany()
+    const problems= await db.problem.findMany(
+        {
+            include:{
+                solvedBy:{
+                    where:{
+                        userId:req.user.id
+                    }
+                }
+            }
+        }
+    )
     if(!problems){
         throw new ApiErrors(404,"No Problems Found")
     }
