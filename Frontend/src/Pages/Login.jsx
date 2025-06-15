@@ -15,6 +15,7 @@ import {
   import {z} from "zod"
   import AuthImagePattern from "../Components/AuthImagePattern"
 import { useAuthStore } from '../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
 
   const LoginSchema=z.object({
     email:z.string().email("Enter valid email"),
@@ -28,7 +29,7 @@ import { useAuthStore } from '../store/useAuthStore';
 
 const Login = () => {
   
-
+    const navigate=useNavigate()
     const [showPassword, setShowPassword]=useState(false)
     const {login,isLoggingIn}=useAuthStore()
     const {
@@ -41,6 +42,7 @@ const Login = () => {
         try{
             await login(data)
             console.log("User login", data)
+            navigate("/")
 
         }
         catch(error){

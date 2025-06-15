@@ -95,21 +95,21 @@ const getplaylistDetails= asyncHandler(async(req,res,next)=>{
 
 const addProblemToPlaylist= asyncHandler(async(req,res,next)=>{
     const {playlistId}=req.params
-    const {problemIds}=req.body
+    const {problemId}=req.body
 
-    console.log(problemIds)
+    console.log(problemId)
 
     //check if array is empty or not
-    if(!Array.isArray(problemIds) || problemIds.length==0){
-        throw new ApiErrors(401,"There is no problem id")
+    if(!Array.isArray(problemId) || problemId.length==0){
+        throw new ApiErrors(403,"There is no problem id")
     }
 
     if(!validator.isUUID(playlistId)){
-        throw new ApiErrors(401, "playlist id is good")
+        throw new ApiErrors(401, "playlist id is not good")
     }
 
     const problemAdded=await db.problemInPlaylist.createMany({
-        data:problemIds.map((problemId)=>({
+        data:problemId.map((problemId)=>({
             playlistId,
             problemId
         }))

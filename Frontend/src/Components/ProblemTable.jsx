@@ -1,7 +1,11 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState,useEffect } from 'react'
 import { useAuthStore } from '../store/useAuthStore'
 import { Link } from 'react-router-dom'
 import { Bookmark, PencilIcon, Trash, TrashIcon, Plus } from "lucide-react";
+import { useActionsstore } from '../store/useActionStore';
+import { usePlaylistStore } from '../store/usePlaylistStore';
+import AddToPlaylistModal from './AddToPlaylist';
+import CreatePlaylistModal from './CreatePlaylistModal';
 
 
 const ProblemTable = ({problems}) => {
@@ -10,9 +14,29 @@ const ProblemTable = ({problems}) => {
     const [difficulty,setDifficulty]=useState("ALL")
     const [selectedTag,setSelectedTag]=useState("ALL")
     const [currentPage,setCurrentPage]=useState(1)
+    const {onDeleteProblems}=useActionsstore()
+    const {createPlaylist}=usePlaylistStore()
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] = useState(false);
+    const [selectedProblemId, setSelectedProblemId] = useState(null);
+  
 
 
-
+   //delete problem
+   
+    const handleDelete= (id)=>{
+       
+         onDeleteProblems(id)
+    }
+    const handleCreatePlaylist = async (data) => {
+      await createPlaylist(data);
+    };
+  
+    const handleAddToPlaylist = (problemId) => {
+      setSelectedProblemId(problemId);
+      setIsAddToPlaylistModalOpen(true);
+    };
+  
 
     //Define tags value taking unique tags
     const allTags=useMemo(()=>{
@@ -51,6 +75,15 @@ const ProblemTable = ({problems}) => {
         <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Problems</h2>
         {/*  Create playlist button*/ }
+       
+        <button
+          className="btn btn-primary gap-2"
+          onClick={() => setIsCreateModalOpen(true)}
+        >
+          <Plus className="w-4 h-4" />
+          Create Playlist
+        </button>
+        
         </div>
         <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
              {/*Search*/ }
@@ -148,7 +181,7 @@ const ProblemTable = ({problems}) => {
                       </span>
                     </td>
                     <td>
-                      {/* <div className="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                       <div className="flex flex-col md:flex-row gap-2 items-start md:items-center">
                         {authUser?.role === "ADMIN" && (
                           <div className="flex gap-2">
                             <button
@@ -162,14 +195,14 @@ const ProblemTable = ({problems}) => {
                             </button>
                           </div>
                         )}
-                        <button
+                         <button
                           className="btn btn-sm btn-outline flex gap-2 items-center"
                           onClick={() => handleAddToPlaylist(problem.id)}
                         >
                           <Bookmark className="w-4 h-4" />
                           <span className="hidden sm:inline">Save to Playlist</span>
-                        </button>
-                      </div> */}
+                        </button> 
+                      </div>  
                     </td>
                   </tr>
                 );
@@ -200,6 +233,17 @@ const ProblemTable = ({problems}) => {
         onClick={()=>setCurrentPage((prev)=>prev+1)}>
             Next
         </button>
+        <CreatePlaylistModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePlaylist}
+      />
+      
+      <AddToPlaylistModal
+        isOpen={isAddToPlaylistModalOpen}
+        onClose={() => setIsAddToPlaylistModalOpen(false)}
+        problemId={selectedProblemId}
+      />
     </div>
   )
 }
