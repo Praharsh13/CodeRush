@@ -8,6 +8,7 @@ export const useAuthStore=create((set)=>({
     isSigninUp:false,
     isLoggingIn:false,
     isCheckingAuth:false,
+    isVerifyingMail:false,
 
 
     checkAuth: async ()=>{
@@ -72,5 +73,20 @@ export const useAuthStore=create((set)=>({
             console.log("Error loging out ", error)
             toast.error(`${error.response?.data?.message}`)
         }
+    },
+
+    verifymail: async (id)=>{
+        try{
+            set({isVerifyingMail:true})
+            const res= await axiosInstance.post(`/auth/verifyemail/${id}`)
+            set({authUser:res.data.data})
+            toast.success(res.data.message ||"User verify successfully")
+        }catch(error){
+            console.log("Error in Veryfying Email", error.response?.data?.message)
+        }finally{
+            set({isVerifyingMail:false})
+        }
     }
+
+
 }))

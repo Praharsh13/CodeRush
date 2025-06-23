@@ -33,18 +33,19 @@ enum SubmissionStatus {
 }
 
 model User {
-  id                     String   @id @default(uuid())
-  username               String?
-  email                  String   @unique
-  isEmailVerified        Boolean?
-  emailVerificationToken String?
-  forgotPasswordToken    String?
-  forgotPasswordExpiry   String?
-  avatar                 Json?
-  role                   UserRole @default(USER)
-  password               String
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  id                      String    @id @default(uuid())
+  username                String?
+  email                   String    @unique
+  isEmailVerified         Boolean?  @default(false)
+  emailVerificationToken  String?
+  forgotPasswordToken     String?
+  forgotPasswordExpiry    DateTime?
+  avatar                  Json?
+  role                    UserRole  @default(USER)
+  password                String
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  emailVerificationExpiry DateTime?
 
   //Creating one-to-many Relationships
   problems      Problem[]

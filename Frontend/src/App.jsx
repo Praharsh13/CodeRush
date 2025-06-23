@@ -10,6 +10,7 @@ import Layout from './layout/Layout'
 import AdminRoute from './Components/AdminRoute'
 import AddProblem from './Pages/AddProblem'
 import ProblemPage from './Pages/ProblemPage'
+import VerifyEmailPage from './Pages/VerifyEmailPage'
 
 const App = () => {
   const {authUser,checkAuth,isCheckingAuth}=useAuthStore()
@@ -53,6 +54,9 @@ const App = () => {
     element={authUser ? <AddProblem /> : <Navigate to="/" />}
   />
 </Route>
+<Route 
+path="/verifyemail/:id"
+element={<VerifyEmailPage/>}/>
     </Routes>
     </>
    
